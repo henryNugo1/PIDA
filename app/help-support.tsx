@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import SmoothModal from "../components/ui/SmoothModal";
 import { AuthContext } from "../context/AuthContext";
 import { ThemeContext } from "../context/ThemeContext";
 
@@ -33,6 +34,7 @@ export default function HelpSupportScreen() {
   const [issueType, setIssueType] = useState(issueTypes[0]);
   const [message, setMessage] = useState("");
   const [isOpeningEmail, setIsOpeningEmail] = useState(false);
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
 
   if (!themeContext) return null;
 
@@ -64,10 +66,7 @@ export default function HelpSupportScreen() {
       setIsOpeningEmail(true);
       await Linking.openURL(mailUrl);
       setMessage("");
-      Alert.alert(
-        "Email opened",
-        "Your message was prepared in your email app. Make sure you tap Send there to deliver it to PIDA Support.",
-      );
+      setShowEmailConfirmation(true);
     } catch {
       Alert.alert(
         "Contact support",
@@ -276,6 +275,90 @@ export default function HelpSupportScreen() {
           </Text>
         </View>
       </ScrollView>
+
+      <SmoothModal
+        visible={showEmailConfirmation}
+        onRequestClose={() => setShowEmailConfirmation(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            padding: 22,
+            backgroundColor: "rgba(0,0,0,0.62)",
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              maxWidth: 430,
+              alignSelf: "center",
+              backgroundColor: theme.card,
+              borderColor: theme.border,
+              borderWidth: 1,
+              borderRadius: 22,
+              padding: 20,
+              shadowColor: "#000",
+              shadowOpacity: 0.24,
+              shadowRadius: 22,
+              shadowOffset: { width: 0, height: 10 },
+              elevation: 10,
+            }}
+          >
+            <View
+              style={{
+                width: 52,
+                height: 52,
+                borderRadius: 18,
+                backgroundColor: theme.primarySoft,
+                borderColor: theme.primary,
+                borderWidth: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 16,
+              }}
+            >
+              <Feather name="check" size={25} color={theme.primary} />
+            </View>
+
+            <Text style={{ color: theme.text, fontSize: 22, fontWeight: "900" }}>
+              Email ready
+            </Text>
+            <Text
+              style={{
+                color: theme.muted,
+                fontSize: 14,
+                lineHeight: 21,
+                fontWeight: "700",
+                marginTop: 8,
+              }}
+            >
+              Your support message was prepared in your email app. Tap Send
+              there to deliver it to PIDA Support.
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => setShowEmailConfirmation(false)}
+              activeOpacity={0.86}
+              accessibilityRole="button"
+              style={{
+                minHeight: 52,
+                marginTop: 20,
+                borderRadius: 15,
+                backgroundColor: theme.primary,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{ color: theme.screen, fontSize: 15, fontWeight: "900" }}
+              >
+                Got it
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SmoothModal>
     </SafeAreaView>
   );
 }
