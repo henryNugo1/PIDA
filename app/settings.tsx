@@ -442,6 +442,14 @@ export default function SettingsScreen() {
         <SectionLabel theme={theme}>App</SectionLabel>
 
         <SettingsItem
+          icon="help-circle"
+          title="Help & Support"
+          subtitle="Billing, account help, feedback and problem reports"
+          theme={theme}
+          onPress={() => router.push("/help-support" as any)}
+        />
+
+        <SettingsItem
           icon="info"
           title="About"
           subtitle="Learn what this app is built to help you do"

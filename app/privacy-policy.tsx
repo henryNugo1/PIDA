@@ -39,7 +39,7 @@ export default function PrivacyPolicyScreen() {
           title: "Your Choices",
           body: [
             "You can update your profile, change your plan, cancel subscriptions, and stop using the app at any time.",
-            "If you need help with your account or data, contact PIDA support through the support channel provided in the app or store listing.",
+            "If you need help with your account or data, use Help & Support in the PIDA app or email support@mypida.com.",
           ],
         },
         {

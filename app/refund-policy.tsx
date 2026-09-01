@@ -36,7 +36,7 @@ export default function RefundPolicyScreen() {
         {
           title: "How To Request Help",
           body: [
-            "If something goes wrong with a payment, contact PIDA support through the support channel shown in the app or store listing. We will review the issue and help you resolve it where possible.",
+            "If something goes wrong with a payment, use Help & Support in the PIDA app or email support@mypida.com. Include your account email and Paddle transaction ID. We usually respond within 2 business days.",
           ],
         },
       ]}
