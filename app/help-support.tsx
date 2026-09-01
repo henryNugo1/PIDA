@@ -32,14 +32,19 @@ export default function HelpSupportScreen() {
   const { width } = useWindowDimensions();
   const [issueType, setIssueType] = useState(issueTypes[0]);
   const [message, setMessage] = useState("");
+  const [isOpeningEmail, setIsOpeningEmail] = useState(false);
 
   if (!themeContext) return null;
 
   const { theme } = themeContext;
   const isNarrowPhone = width < 380;
   const accountEmail = auth?.user?.email ?? "Not signed in";
+  const canContactSupport = message.trim().length > 0 && !isOpeningEmail;
 
   const contactSupport = async () => {
+    if (!canContactSupport) return;
+
+    const supportMessage = message.trim();
     const subject = encodeURIComponent(`PIDA support: ${issueType}`);
     const body = encodeURIComponent(
       [
@@ -48,7 +53,7 @@ export default function HelpSupportScreen() {
         "Paddle transaction ID (for billing issues):",
         "",
         "What happened:",
-        message.trim() || "Please describe the issue here.",
+        supportMessage,
         "",
         "Please do not include card numbers, passwords, or security codes.",
       ].join("\n"),
@@ -56,12 +61,20 @@ export default function HelpSupportScreen() {
     const mailUrl = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
 
     try {
+      setIsOpeningEmail(true);
       await Linking.openURL(mailUrl);
+      setMessage("");
+      Alert.alert(
+        "Email opened",
+        "Your message was prepared in your email app. Make sure you tap Send there to deliver it to PIDA Support.",
+      );
     } catch {
       Alert.alert(
         "Contact support",
         `Open your email app and send your message to ${SUPPORT_EMAIL}.`,
       );
+    } finally {
+      setIsOpeningEmail(false);
     }
   };
 
@@ -204,21 +217,35 @@ export default function HelpSupportScreen() {
 
           <TouchableOpacity
             onPress={contactSupport}
+            disabled={!canContactSupport}
             activeOpacity={0.86}
+            accessibilityState={{ disabled: !canContactSupport }}
             style={{
               marginTop: 14,
               minHeight: 54,
               borderRadius: 16,
-              backgroundColor: theme.primary,
+              backgroundColor: canContactSupport ? theme.primary : theme.innerCard,
+              borderColor: canContactSupport ? theme.primary : theme.border,
+              borderWidth: 1,
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
               gap: 9,
             }}
           >
-            <Feather name="mail" size={19} color={theme.screen} />
-            <Text style={{ color: theme.screen, fontSize: 15, fontWeight: "900" }}>
-              Email PIDA Support
+            <Feather
+              name="mail"
+              size={19}
+              color={canContactSupport ? theme.screen : theme.muted}
+            />
+            <Text
+              style={{
+                color: canContactSupport ? theme.screen : theme.muted,
+                fontSize: 15,
+                fontWeight: "900",
+              }}
+            >
+              {isOpeningEmail ? "Opening email..." : "Email PIDA Support"}
             </Text>
           </TouchableOpacity>
         </View>
